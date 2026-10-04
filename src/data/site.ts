@@ -45,7 +45,7 @@ export const site = {
   /** Full name — used for <title> and meta tags. Brand name, do NOT translate. */
   title: 'Sylvan',
   /** Short handle used in page titles and the brand mark. Do NOT translate. */
-  shortTitle: 'sylvan',
+  shortTitle: 'Sylvan',
   /** Production URL — no trailing slash. Used for canonical URLs, OG tags, RSS and sitemap */
   url: 'https://sylvan-io.github.io',
   author: {

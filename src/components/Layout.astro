@@ -1,19 +1,19 @@
 ---
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
-import '../styles/global.css';
-import Header from './Header.astro';
-import Footer from './Footer.astro';
-import { site, withBase, siteDescription } from '../data/site';
+import { site,siteDescription,withBase } from '../data/site';
 import {
-  DEFAULT_LOCALE,
-  LOCALES,
-  LOCALE_BCP47,
-  OG_LOCALES,
-  prefixPathname,
-  stripLocalePrefix,
-  type Locale,
+DEFAULT_LOCALE,
+LOCALES,
+LOCALE_BCP47,
+OG_LOCALES,
+prefixPathname,
+stripLocalePrefix,
+type Locale
 } from '../i18n';
+import '../styles/global.css';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
 
 interface Props {
   title?: string;
@@ -89,7 +89,6 @@ const ogLocale = OG_LOCALES[pageLocale];
     <meta name="author" content={site.author.name} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
-    <link rel="icon" type="image/x-icon" href={withBase('/favicon.ico')} />
     <link rel="alternate" type="application/rss+xml" title={site.title} href={withBase(pageLocale === DEFAULT_LOCALE ? '/rss.xml' : '/en/rss.xml')} />
     <meta name="generator" content={Astro.generator} />
 

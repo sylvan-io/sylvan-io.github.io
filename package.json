@@ -1,9 +1,9 @@
 {
-  "name": "shaneou-link-blog",
+  "name": "sylvan-io-blog",
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Shane Ou 的个人技术博客",
+  "description": "Sylvan 的个人技术博客",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

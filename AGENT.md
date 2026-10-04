@@ -245,3 +245,4 @@ npm run check      # Astro + TypeScript 类型检查（保持 0 error）
 4. **schema 字段新增**要同步更新 `src/content.config.ts`、README 的 frontmatter 示例、所有引用该字段的页面/组件
 5. **新增依赖**前先确认 npm 缓存能解析（避免在沙箱环境装到一半失败）
 6. **占位符 TODO**（`site.author.email` / `socials.*.url` / `resume.experience[]`）上线前必须替换
+7. **禁止在修改代码后执行编译 / `npm run preview`**——改完代码后不得自行运行 `npm run build`、`npm run check`、`npm run preview` 等编译或预览命令；如需要验证，先列出待执行命令与预期，交由用户自行触发

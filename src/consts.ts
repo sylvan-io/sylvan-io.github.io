@@ -6,7 +6,7 @@
  * src/i18n/*.json.
  */
 
-export const SITE_TITLE = 'Shane Ou';
+export const SITE_TITLE = 'Sylvan';
 export const SITE_DESCRIPTION_KEY = 'site.description' as const;
 
 export type NavItem = {
