@@ -1,0 +1,26 @@
+---
+import Layout from '../components/Layout.astro';
+import Icon from '../components/Icon.astro';
+import { withBase } from '../data/site';
+import { useT } from '../utils/t';
+import { DEFAULT_LOCALE, prefixPathname, type Locale } from '../i18n';
+
+const locale: Locale = ((Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+---
+
+<Layout title={t('notFound.eyebrow')} description={t('notFound.title')} noindex>
+  <section class="section center">
+    <div class="container">
+      <p class="eyebrow" style="margin-top: 2rem;">404</p>
+      <h1 style="font-size: clamp(4rem, 12vw, 7rem); margin: 0;">404</h1>
+      <p class="muted" style="max-width: 45ch; margin: 0 auto 1.5rem;">
+        {t('notFound.lead')}
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a class="btn btn-primary" href={withBase(prefixPathname('/home', locale))}>{t('notFound.backHome')} <Icon name="arrow-right" size={16} /></a>
+        <a class="btn" href={withBase(prefixPathname('/blog', locale))}>{t('notFound.browseBlog')} <Icon name="arrow-right" size={16} /></a>
+      </div>
+    </div>
+  </section>
+</Layout>

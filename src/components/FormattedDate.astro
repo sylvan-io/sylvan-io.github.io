@@ -1,0 +1,14 @@
+---
+import { formatDateLocalized } from '../utils/posts';
+import { DEFAULT_LOCALE, type Locale } from '../i18n';
+
+interface Props {
+  date: Date;
+  locale?: Locale;
+}
+
+const { date, locale: localeProp } = Astro.props;
+const locale: Locale = (localeProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+---
+
+<time datetime={date.toISOString()}>{formatDateLocalized(date, locale)}</time>

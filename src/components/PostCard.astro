@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../data/site';
+import { getTagLabel } from '../utils/tags';
+import { readingTime, readingTimeLabel } from '../utils/posts';
+import { useT } from '../utils/t';
+import {
+  DEFAULT_LOCALE,
+  prefixPathname,
+  canonicalSlugOf,
+  type Locale,
+} from '../i18n';
+import FormattedDate from './FormattedDate.astro';
+
+type Post = CollectionEntry<'blog'>;
+
+interface Props {
+  post: Post;
+  /**
+   * Locale of the page rendering the card. Defaults to Astro.currentLocale.
+   */
+  pageLocale?: Locale;
+  /**
+   * Show a language badge when the post's own lang differs from the page locale.
+   */
+  showLangBadge?: boolean;
+}
+
+const { post, pageLocale: pageLocaleProp, showLangBadge = false } = Astro.props;
+const pageLocale: Locale = (pageLocaleProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(pageLocale);
+
+const { title, description, pubDate, tags, heroImage, lang } = post.data;
+const rt = readingTime(post.body);
+const readingLabel = readingTimeLabel(rt, pageLocale);
+
+const blogBase = prefixPathname('/blog', pageLocale);
+const canonicalSlug = canonicalSlugOf(post.id);
+const isLangMismatch = showLangBadge && lang !== pageLocale;
+const badgeText = lang === 'en' ? t('card.langBadgeEn') : t('card.langBadgeZh');
+---
+
+<article class="post-card" data-lang={lang}>
+  {heroImage && (
+    <a class="post-card-cover" href={withBase(`${blogBase}/${canonicalSlug}/`)}>
+      <img src={heroImage} alt="" loading="lazy" />
+    </a>
+  )}
+  <div class="post-card-body">
+    <div class="post-meta">
+      <FormattedDate date={pubDate} locale={pageLocale} />
+      <span class="dot">·</span>
+      <span>{readingLabel}</span>
+      {isLangMismatch && (
+        <>
+          <span class="dot">·</span>
+          <span class="lang-badge" aria-label={badgeText}>{badgeText}</span>
+        </>
+      )}
+    </div>
+    <h3>
+      <a href={withBase(`${blogBase}/${canonicalSlug}/`)}>{title}</a>
+    </h3>
+    <p class="post-excerpt">{description}</p>
+    {tags.length > 0 && (
+      <div class="tag-list">
+        {tags.map((tagSlug) => (
+          <a class="tag" href={withBase(`${blogBase}/tags/${tagSlug}/`)}>#{getTagLabel(tagSlug, pageLocale)}</a>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .lang-badge {
+    display: inline-block;
+    padding: 0.05rem 0.45rem;
+    border-radius: 999px;
+    background: var(--accent-soft, rgba(120, 120, 200, 0.12));
+    color: var(--accent, #5050a0);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>

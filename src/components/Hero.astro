@@ -1,0 +1,90 @@
+---
+import { typingRoles } from '../data/resume';
+import { site, withBase } from '../data/site';
+import Icon from './Icon.astro';
+import { useT } from '../utils/t';
+import { DEFAULT_LOCALE, type Locale } from '../i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale: localeProp } = Astro.props;
+const locale: Locale = (localeProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+
+const rolesJson = JSON.stringify(typingRoles);
+
+// Locale-aware display name. Each entry in `nameByLocale` is required to
+// cover every locale, so a direct lookup is safe. The fallback chain is
+// defensive only — it should never fire in practice.
+const nameDisplay =
+  site.author.nameByLocale[locale] ??
+  site.author.nameByLocale[DEFAULT_LOCALE] ?? {
+    family: site.author.name.split(' ').shift() ?? '',
+    given: site.author.name.split(' ').slice(1).join(' '),
+  };
+const { family: firstName, given: lastName } = nameDisplay;
+---
+
+<section class="hero">
+  <div class="stars" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div>
+      <p class="hero-greeting">{t('home.greeting')}</p>
+      <h1>{firstName} {lastName && <span class="accent">{lastName}</span>}</h1>
+      <p class="hero-typed">
+        <span class="typed" id="typed-roles" data-roles={rolesJson}></span><span class="typed-cursor" aria-hidden="true">▍</span>
+      </p>
+
+      <p class="hero-bio">{t('home.bio')}</p>
+
+      <div class="social-row">
+        {Object.values(site.socials).map((s) => (
+          <a class="social-link" href={withBase(s.url)} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener">
+            {s.icon && <Icon name={s.icon} />}
+            {s.label}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <img class="hero-avatar" src={withBase('/images/avatar.png')} alt={`Portrait of ${site.author.name}`} width="220" height="220" />
+  </div>
+</section>
+
+<script>
+  const el = document.getElementById('typed-roles');
+  if (el) {
+    const roles: string[] = JSON.parse(el.dataset.roles ?? '[]');
+    let roleIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    const tick = () => {
+      const word = roles[roleIndex];
+      if (!deleting) {
+        charIndex++;
+        el.textContent = word.slice(0, charIndex);
+        if (charIndex === word.length) {
+          deleting = true;
+          setTimeout(tick, 1800);
+          return;
+        }
+        setTimeout(tick, 70);
+      } else {
+        charIndex--;
+        el.textContent = word.slice(0, charIndex);
+        if (charIndex === 0) {
+          deleting = false;
+          roleIndex = (roleIndex + 1) % roles.length;
+          setTimeout(tick, 350);
+          return;
+        }
+        setTimeout(tick, 35);
+      }
+    };
+
+    tick();
+  }
+</script>

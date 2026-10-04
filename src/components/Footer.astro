@@ -1,0 +1,46 @@
+---
+import { site, withBase } from '../data/site';
+import { NAV_ITEMS } from '../consts';
+import { useT } from '../utils/t';
+import {
+  DEFAULT_LOCALE,
+  prefixPathname,
+  type Locale,
+} from '../i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = useT(locale);
+
+const navLinks = NAV_ITEMS.map((l) => ({
+  href: withBase(prefixPathname(l.href, locale)),
+  label: t(l.labelKey),
+}));
+
+const copyright = t('footer.copy', {
+  year: new Date().getFullYear(),
+  name: site.author.name,
+  location: site.author.location,
+});
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <ul class="footer-links">
+      {navLinks.map((l) => (
+        <li><a href={l.href}>{l.label}</a></li>
+      ))}
+    </ul>
+    <ul class="footer-links">
+      {Object.values(site.socials).filter(Boolean).map((s) => (
+        <li>
+          <a href={withBase(s.url)} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener">{s.label}</a>
+        </li>
+      ))}
+    </ul>
+    <p>{copyright}</p>
+  </div>
+</footer>

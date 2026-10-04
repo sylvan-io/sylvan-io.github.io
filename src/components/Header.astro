@@ -1,0 +1,54 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import LangSwitcher from './LangSwitcher.astro';
+import { site, withBase } from '../data/site';
+import { NAV_ITEMS } from '../consts';
+import { useT } from '../utils/t';
+import {
+  DEFAULT_LOCALE,
+  prefixPathname,
+  type Locale,
+} from '../i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = useT(locale);
+
+const navLinks = NAV_ITEMS.map((l) => ({
+  href: withBase(prefixPathname(l.href, locale)),
+  label: t(l.labelKey),
+}));
+
+const homeHref = withBase(prefixPathname('/home', locale));
+---
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href={homeHref}>
+      <span aria-hidden="true">&gt;</span> {site.shortTitle}
+      <span>_</span>
+    </a>
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        {
+          navLinks.map((l) => (
+            <li>
+              <a href={l.href} aria-current={Astro.url.pathname === l.href ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <LangSwitcher locale={locale} />
+        </li>
+        <li>
+          <ThemeToggle />
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

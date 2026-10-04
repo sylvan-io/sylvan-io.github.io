@@ -1,0 +1,148 @@
+---
+import Layout from '../../components/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { render } from 'astro:content';
+import { site, withBase } from '../../data/site';
+import {
+  resolvePost,
+  getPostNeighbors,
+  formatDateLocalized,
+  readingTime,
+  readingTimeLabel,
+} from '../../utils/posts';
+import { getTagLabel } from '../../utils/tags';
+import { useT } from '../../utils/t';
+import {
+  DEFAULT_LOCALE,
+  LOCALE_BCP47,
+  prefixPathname,
+  canonicalSlugOf,
+  type Locale,
+} from '../../i18n';
+import FormattedDate from '../../components/FormattedDate.astro';
+import TranslationFallbackBadge from '../../components/TranslationFallbackBadge.astro';
+
+export async function getStaticPaths() {
+  const { getCollection } = await import('astro:content');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Deduplicate by canonical slug — only one path per article, regardless of language.
+  const seen = new Set<string>();
+  const paths: { params: { slug: string } }[] = [];
+  for (const p of posts) {
+    const slug = canonicalSlugOf(p.id);
+    if (seen.has(slug)) continue;
+    seen.add(slug);
+    paths.push({ params: { slug } });
+  }
+  return paths;
+}
+
+const locale: Locale = ((Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+
+const canonicalSlug = Astro.params.slug as string;
+const resolved = await resolvePost(canonicalSlug, locale);
+if (!resolved) {
+  // Should be unreachable because getStaticPaths only emits known slugs,
+  // but Astro's static path checker wants a real return.
+  return Astro.redirect('/blog');
+}
+const { post, isFallback, availableTranslations } = resolved;
+
+const { Content } = await render(post);
+
+const neighbors = await getPostNeighbors(post, locale);
+const newer = neighbors.newer;
+const older = neighbors.older;
+
+const rt = readingTime(post.body);
+const readingLabel = readingTimeLabel(rt, locale);
+const updatedLabel = post.data.updatedDate
+  ? t('blogPost.updatedOn', {
+      date: formatDateLocalized(post.data.updatedDate, locale),
+    })
+  : null;
+
+const blogBase = prefixPathname('/blog', locale);
+const canonical = `${site.url}${blogBase}/${canonicalSlug}/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  ...(post.data.updatedDate && { dateModified: post.data.updatedDate.toISOString() }),
+  author: { '@type': 'Person', name: site.author.name },
+  url: canonical,
+  keywords: post.data.tags.join(', '),
+  inLanguage: LOCALE_BCP47[post.data.lang],
+};
+
+// <html lang> must follow the *rendered* language, not the URL locale.
+// When falling back, the page is in zh-CN even though the URL is /en/blog/...
+const htmlLang = LOCALE_BCP47[post.data.lang];
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  image={post.data.heroImage ?? '/images/og.jpg'}
+  canonical={canonical}
+  jsonLd={jsonLd}
+  locale={locale}
+  htmlLang={htmlLang}
+>
+  <article class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" style="margin-bottom: 1.5rem;">
+        <a href={withBase(blogBase)}><Icon name="arrow-left" size={14} /> {t('blogPost.backToList')}</a>
+      </nav>
+
+      <header style="max-width: 70ch;">
+        <div class="post-meta">
+          <FormattedDate date={post.data.pubDate} locale={locale} />
+          <span class="dot">·</span>
+          <span>{readingLabel}</span>
+          {updatedLabel && (
+            <>
+              <span class="dot">·</span>
+              <span>{updatedLabel}</span>
+            </>
+          )}
+        </div>
+        <h1 style="margin: 0.75rem 0 0.5rem;">{post.data.title}</h1>
+        <p class="muted" style="font-size: 1.1rem;">{post.data.description}</p>
+        {post.data.tags.length > 0 && (
+          <div class="tag-list">
+            {post.data.tags.map((tagSlug) => (
+              <a class="tag" href={withBase(`${blogBase}/tags/${tagSlug}/`)}>#{getTagLabel(tagSlug, locale)}</a>
+            ))}
+          </div>
+        )}
+      </header>
+
+      {post.data.heroImage && (
+        <img src={withBase(post.data.heroImage)} alt={post.data.title} style="border-radius: var(--radius-lg); margin: 2rem 0; width: 100%; object-fit: cover; max-height: 420px;" />
+      )}
+
+      <div class="prose" style="margin-top: 2rem;">
+        <Content />
+      </div>
+
+      <nav aria-label={t('blogPost.backToList')} class="pagination" style="justify-content: space-between; margin-top: 3rem;">
+        {newer && <a href={withBase(`${blogBase}/${canonicalSlugOf(newer.id)}/`)} style="display: inline-flex; align-items: center; gap: 0.5rem;"><Icon name="arrow-left" size={16} /> {newer.data.title}</a>}
+        {older && <a href={withBase(`${blogBase}/${canonicalSlugOf(older.id)}/`)} style="display: inline-flex; align-items: center; gap: 0.5rem; margin-left: auto;">{older.data.title} <Icon name="arrow-right" size={16} /></a>}
+      </nav>
+    </div>
+  </article>
+
+  <TranslationFallbackBadge
+    isFallback={isFallback}
+    postLang={post.data.lang}
+    pageLocale={locale}
+    availableTranslations={availableTranslations}
+    canonicalSlug={canonicalSlug}
+  />
+</Layout>

@@ -1,0 +1,88 @@
+{
+  "site": {
+    "description": "记录互联网架构、编程语言、AI 落地的学习与实践。"
+  },
+  "nav": {
+    "home": "Home",
+    "work": "Work",
+    "blog": "Blog",
+    "projects": "Projects"
+  },
+  "home": {
+    "greeting": "你好，我是",
+    "bio": "在这里写一段简短的自我介绍 —— 你是谁、你构建什么、你对什么好奇。两三句话即可。"
+  },
+  "blog": {
+    "eyebrow": "Blog",
+    "heading": "文章",
+    "intro": "围绕计算机基础、编程语言、AI、容器、中间件与架构设计的学习与实践记录。",
+    "back": "返回博客"
+  },
+  "blogPost": {
+    "readingTime": "{minutes} 分钟阅读",
+    "updatedOn": "更新于 {date}",
+    "backToList": "返回博客"
+  },
+  "work": {
+    "eyebrow": "Work",
+    "sectionExperienceEyebrow": "Experience",
+    "sectionExperienceHeading": "工作经历",
+    "sectionEducationEyebrow": "Education",
+    "sectionEducationHeading": "教育背景",
+    "sectionSkillsEyebrow": "Skills",
+    "sectionSkillsHeading": "技术栈"
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "heading": "开源项目",
+    "intro": "我在 GitHub 上维护的一些项目，涵盖后端基础设施、AI 工具与学习练手。",
+    "empty": "暂无项目。在 src/content/projects/ 下新建 .md 文件即可添加。",
+    "linkGithub": "GitHub →",
+    "linkDemo": "Demo →",
+    "ongoing": "至今"
+  },
+  "tags": {
+    "cs-fundamentals": "计算机基础",
+    "go": "Go",
+    "java": "Java",
+    "python": "Python",
+    "rust": "Rust",
+    "ai": "AI",
+    "containers": "容器",
+    "middleware": "中间件",
+    "architecture": "架构设计",
+    "descriptions": {
+      "cs-fundamentals": "操作系统、网络、数据结构等基础",
+      "go": "Go 语言与生态",
+      "java": "Java 与 JVM 生态",
+      "python": "Python 与数据 / AI 应用",
+      "rust": "Rust 内存安全与系统编程",
+      "ai": "LLM、AI Agent 与应用落地",
+      "containers": "Docker、Kubernetes 与容器生态",
+      "middleware": "消息队列、缓存、RPC 等中间件",
+      "architecture": "系统架构与设计模式"
+    }
+  },
+  "footer": {
+    "copy": "© {year} {name} · {location}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "页面未找到",
+    "lead": "这篇页面已经搬走，或者从未存在过。从下面任一入口回去吧。",
+    "backHome": "回到首页",
+    "browseBlog": "浏览文章"
+  },
+  "langSwitcher": {
+    "label": "语言",
+    "viewIn": "查看 {lang} 版本"
+  },
+  "fallback": {
+    "langLabel": "中文",
+    "switchToOriginal": "查看中文原文"
+  },
+  "card": {
+    "langBadgeZh": "中文",
+    "langBadgeEn": "EN"
+  }
+}

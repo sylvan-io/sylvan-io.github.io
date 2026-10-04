@@ -1,0 +1,57 @@
+---
+import Layout from '../../../components/Layout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getLocalizedList } from '../../../utils/posts';
+import { getTagLabel } from '../../../utils/tags';
+import { useT } from '../../../utils/t';
+import { BLOG_TAGS } from '../../../content.config';
+import { withBase } from '../../../data/site';
+import {
+  DEFAULT_LOCALE,
+  prefixPathname,
+  type Locale,
+} from '../../../i18n';
+
+const locale: Locale = ((Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+
+const list = await getLocalizedList(locale);
+
+
+const usedTagSlugs = new Set<string>();
+for (const { post } of list) {
+  for (const tag of post.data.tags) usedTagSlugs.add(tag);
+}
+
+const tagCounts = new Map<string, number>();
+for (const { post } of list) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const blogBase = prefixPathname('/blog', locale);
+const showLangBadge = locale !== DEFAULT_LOCALE;
+---
+
+<Layout title={t('blog.eyebrow')} description={t('blog.intro')}>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">{t('blog.eyebrow')}</p>
+      <h1>{t('blog.heading')}</h1>
+      <p class="muted" style="max-width: 60ch;">
+        {t('blog.intro')}
+      </p>
+
+      <div class="tag-list" style="margin: 1.5rem 0 2.5rem;">
+        {BLOG_TAGS.filter((tagSlug) => usedTagSlugs.has(tagSlug)).map((tagSlug) => (
+          <a class="tag" href={withBase(`${blogBase}/tags/${tagSlug}/`)}>#{getTagLabel(tagSlug, locale)} <span style="opacity: 0.6;">({tagCounts.get(tagSlug) ?? 0})</span></a>
+        ))}
+      </div>
+
+      <div class="post-list">
+        {list.map(({ post }) => <PostCard post={post} pageLocale={locale} showLangBadge={showLangBadge} />)}
+      </div>
+    </div>
+  </section>
+</Layout>

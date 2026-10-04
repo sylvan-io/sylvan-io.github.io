@@ -1,0 +1,38 @@
+---
+import Layout from '../../../components/Layout.astro';
+import ProjectCard from '../../../components/ProjectCard.astro';
+import { getCollection } from 'astro:content';
+import { useT } from '../../../utils/t';
+import { DEFAULT_LOCALE } from '../../../i18n';
+
+const locale = (Astro.currentLocale as 'zh-CN' | 'en' | undefined) ?? DEFAULT_LOCALE;
+const t = useT(locale);
+
+const all = await getCollection('projects', ({ data }) => !data.draft);
+const projects = all.sort((a, b) => {
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.startDate.valueOf() - a.data.startDate.valueOf();
+});
+---
+
+<Layout title={t('projects.eyebrow')} description={t('projects.intro')}>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">{t('projects.eyebrow')}</p>
+      <h1>{t('projects.heading')}</h1>
+      <p class="muted" style="max-width: 60ch;">
+        {t('projects.intro')}
+      </p>
+
+      {projects.length === 0 ? (
+        <p class="muted" style="margin-top: 2rem;">
+          {t('projects.empty')}
+        </p>
+      ) : (
+        <div class="project-list" style="margin-top: 2rem;">
+          {projects.map((p) => <ProjectCard project={p} />)}
+        </div>
+      )}
+    </div>
+  </section>
+</Layout>

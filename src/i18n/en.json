@@ -1,0 +1,88 @@
+{
+  "site": {
+    "description": "Notes on internet architecture, programming languages, and shipping AI in production."
+  },
+  "nav": {
+    "home": "Home",
+    "work": "Work",
+    "blog": "Blog",
+    "projects": "Projects"
+  },
+  "home": {
+    "greeting": "Hello, I'm",
+    "bio": "Write a short bio here — who you are, what you build, what you're curious about. Two or three sentences is plenty."
+  },
+  "blog": {
+    "eyebrow": "Blog",
+    "heading": "Posts",
+    "intro": "Notes on computer science fundamentals, programming languages, AI, containers, middleware, and system architecture.",
+    "back": "Back to blog"
+  },
+  "blogPost": {
+    "readingTime": "{minutes} min read",
+    "updatedOn": "Updated {date}",
+    "backToList": "Back to blog"
+  },
+  "work": {
+    "eyebrow": "Work",
+    "sectionExperienceEyebrow": "Experience",
+    "sectionExperienceHeading": "Where I've worked",
+    "sectionEducationEyebrow": "Education",
+    "sectionEducationHeading": "Education",
+    "sectionSkillsEyebrow": "Skills",
+    "sectionSkillsHeading": "What I work with"
+  },
+  "projects": {
+    "eyebrow": "Projects",
+    "heading": "Open Source",
+    "intro": "A few projects I maintain on GitHub — backend infrastructure, AI tooling, and learning experiments.",
+    "empty": "No projects yet. Add one by creating a .md file under src/content/projects/.",
+    "linkGithub": "GitHub →",
+    "linkDemo": "Demo →",
+    "ongoing": "Ongoing"
+  },
+  "tags": {
+    "cs-fundamentals": "CS Fundamentals",
+    "go": "Go",
+    "java": "Java",
+    "python": "Python",
+    "rust": "Rust",
+    "ai": "AI",
+    "containers": "Containers",
+    "middleware": "Middleware",
+    "architecture": "Architecture",
+    "descriptions": {
+      "cs-fundamentals": "Operating systems, networking, data structures",
+      "go": "Go language and ecosystem",
+      "java": "Java and the JVM ecosystem",
+      "python": "Python for data and AI applications",
+      "rust": "Rust for memory-safe systems programming",
+      "ai": "LLMs, AI agents, and shipping them",
+      "containers": "Docker, Kubernetes, and the container ecosystem",
+      "middleware": "Message queues, caches, RPC",
+      "architecture": "System architecture and design patterns"
+    }
+  },
+  "footer": {
+    "copy": "© {year} {name} · {location}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Page not found",
+    "lead": "This page has either moved or never existed. Pick another entry point below.",
+    "backHome": "Back home",
+    "browseBlog": "Browse posts"
+  },
+  "langSwitcher": {
+    "label": "Language",
+    "viewIn": "View in {lang}"
+  },
+  "fallback": {
+    "langLabel": "English",
+    "switchToOriginal": "View original (Chinese)"
+  },
+  "card": {
+    "langBadgeZh": "ZH",
+    "langBadgeEn": "EN"
+  }
+}

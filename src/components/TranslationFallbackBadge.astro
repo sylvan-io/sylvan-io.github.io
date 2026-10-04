@@ -1,0 +1,161 @@
+---
+/**
+ * Floating pill shown in the bottom-right corner when a page is rendering
+ * a fallback (different-language) version of a blog post.
+ *
+ * Design:
+ *   - position: fixed, bottom-right
+ *   - Shows the actual language of the rendered post + a quick link to the
+ *     same article in the page's URL locale (when a translation exists),
+ *     or to the canonical (zh-CN) version otherwise.
+ *   - Has a small × dismiss button that hides the pill for the rest of the
+ *     session (sessionStorage — not localStorage, so the notice reappears
+ *     next time the user opens a new tab).
+ */
+import {
+  DEFAULT_LOCALE,
+  LOCALE_LABELS,
+  type Locale,
+} from '../i18n';
+
+interface Props {
+  /** True only when this page is rendering a fallback version. */
+  isFallback: boolean;
+  /** Language the rendered post is actually written in. */
+  postLang: Locale;
+  /** Locale of the URL / page that requested the post. */
+  pageLocale: Locale;
+  /** Map of locale -> post id for every available translation. */
+  availableTranslations: Partial<Record<Locale, string>>;
+  /** Canonical slug (no `.en` suffix). */
+  canonicalSlug: string;
+}
+
+const {
+  isFallback,
+  postLang,
+  pageLocale: _pageLocale,
+  availableTranslations,
+  canonicalSlug,
+} = Astro.props;
+
+const langLabel = LOCALE_LABELS[postLang] ?? '中文';
+
+// Pick a "switch to" target. We always link to the canonical Chinese URL
+// (or, if an English translation exists, to the /en/ URL for that translation).
+const switchToLocale: Locale =
+  postLang === DEFAULT_LOCALE
+    ? availableTranslations.en
+      ? 'en'
+      : DEFAULT_LOCALE
+    : DEFAULT_LOCALE;
+
+const switchHref =
+  switchToLocale === DEFAULT_LOCALE
+    ? `/blog/${canonicalSlug}/`
+    : `/en/blog/${canonicalSlug}/`;
+
+const switchLabel =
+  switchToLocale === DEFAULT_LOCALE ? '查看中文原文' : 'View English';
+
+const storageKey = `fallback-notice-dismissed:${canonicalSlug}`;
+---
+
+{isFallback && (
+  <aside
+    class="fallback-badge"
+    role="status"
+    aria-live="polite"
+    data-storage-key={storageKey}
+    aria-label={`Currently reading in ${langLabel}`}
+  >
+    <span class="fallback-badge__icon" aria-hidden="true">🌐</span>
+    <span class="fallback-badge__lang">{langLabel}</span>
+    <a class="fallback-badge__action" href={switchHref} hreflang={switchToLocale}>
+      {switchLabel} <span aria-hidden="true">↗</span>
+    </a>
+    <button
+      type="button"
+      class="fallback-badge__close"
+      aria-label="Dismiss translation notice"
+      data-close
+    >×</button>
+  </aside>
+)}
+
+<script>
+  const badges = document.querySelectorAll<HTMLElement>('.fallback-badge');
+  for (const badge of Array.from(badges)) {
+    const key = badge.dataset.storageKey;
+    if (!key) continue;
+    if (sessionStorage.getItem(key) === '1') {
+      badge.hidden = true;
+      continue;
+    }
+    const closeBtn = badge.querySelector<HTMLButtonElement>('[data-close]');
+    closeBtn?.addEventListener('click', () => {
+      sessionStorage.setItem(key, '1');
+      badge.hidden = true;
+    });
+  }
+</script>
+
+<style>
+  .fallback-badge {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.55rem 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: var(--surface, #ffffff);
+    border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    font-size: 0.85rem;
+    line-height: 1.1;
+    color: var(--text-strong, #1a1a1a);
+    max-width: calc(100vw - 2rem);
+  }
+  html[data-theme='dark'] .fallback-badge {
+    background: #1c1c1f;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #f1f1f3;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+  .fallback-badge__icon { font-size: 0.95rem; }
+  .fallback-badge__lang { font-weight: 600; }
+  .fallback-badge__action {
+    color: var(--accent, #5050a0);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft, rgba(80, 80, 160, 0.1));
+  }
+  .fallback-badge__action:hover {
+    background: var(--accent-soft-hover, rgba(80, 80, 160, 0.18));
+  }
+  .fallback-badge__close {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0 0.3rem;
+    opacity: 0.55;
+  }
+  .fallback-badge__close:hover { opacity: 1; }
+  @media (max-width: 540px) {
+    .fallback-badge {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      justify-content: space-between;
+    }
+  }
+</style>

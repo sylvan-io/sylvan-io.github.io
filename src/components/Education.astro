@@ -1,0 +1,34 @@
+---
+import { education } from '../data/resume';
+import { useT } from '../utils/t';
+import { DEFAULT_LOCALE, type Locale } from '../i18n';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale: localeProp } = Astro.props;
+const locale: Locale = (localeProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+---
+
+<section class="section" id="education">
+  <div class="container">
+    <p class="eyebrow">{t('work.sectionEducationEyebrow')}</p>
+    <h2 class="section-heading">{t('work.sectionEducationHeading')}</h2>
+    <div class="edu-grid">
+      {
+        education.map((e) => (
+          <div class="card">
+            <p class="muted" style="font-family: var(--font-mono); font-size: 0.8rem; margin: 0 0 0.4rem;">
+              {e.start} – {e.end}
+            </p>
+            <h3>{e.degree}</h3>
+            <p style="margin: 0 0 0.2rem; font-weight: 600; color: var(--text-strong);">{e.field}</p>
+            <p class="muted" style="margin: 0;">{e.school}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

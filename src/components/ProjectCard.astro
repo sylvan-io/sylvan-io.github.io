@@ -1,0 +1,56 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import { useT } from '../utils/t';
+import { DEFAULT_LOCALE, type Locale } from '../i18n';
+
+type Project = CollectionEntry<'projects'>;
+
+interface Props {
+  project: Project;
+  locale?: Locale;
+}
+
+const { project, locale: localeProp } = Astro.props;
+const locale: Locale = (localeProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
+const t = useT(locale);
+
+const { title, description, repoUrl, demoUrl, stack, coverImage, startDate, endDate } = project.data;
+---
+
+<article class="project-card">
+  {coverImage && (
+    <a class="project-card-cover" href={repoUrl} target="_blank" rel="noopener">
+      <img src={coverImage} alt="" loading="lazy" />
+    </a>
+  )}
+  <div class="project-card-body">
+    <h3>
+      <a href={repoUrl} target="_blank" rel="noopener">{title}</a>
+    </h3>
+    <p class="project-excerpt">{description}</p>
+    <div class="project-meta">
+      <FormattedDate date={startDate} locale={locale} />
+      {endDate ? (
+        <>
+          <span class="dot">·</span>
+          <FormattedDate date={endDate} locale={locale} />
+        </>
+      ) : (
+        <>
+          <span class="dot">·</span>
+          <span>{t('projects.ongoing')}</span>
+        </>
+      )}
+    </div>
+    {stack.length > 0 && (
+      <div class="tag-list">
+        {stack.map((s) => <span class="tag tag-static">{s}</span>)}
+      </div>
+    )}
+    <div class="project-links">
+      <a href={repoUrl} target="_blank" rel="noopener">{t('projects.linkGithub')}</a>
+      {demoUrl && <a href={demoUrl} target="_blank" rel="noopener">{t('projects.linkDemo')}</a>}
+    </div>
+  </div>
+</article>
