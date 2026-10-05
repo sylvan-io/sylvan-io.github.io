@@ -27,10 +27,9 @@
     "eyebrow": "Work",
     "sectionExperienceEyebrow": "Experience",
     "sectionExperienceHeading": "Where I've worked",
-    "sectionEducationEyebrow": "Education",
-    "sectionEducationHeading": "Education",
     "sectionSkillsEyebrow": "Skills",
-    "sectionSkillsHeading": "What I work with"
+    "sectionSkillsHeading": "What I work with",
+    "datePresent": "Present"
   },
   "projects": {
     "eyebrow": "Projects",

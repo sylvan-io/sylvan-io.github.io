@@ -1,11 +1,32 @@
+import { DEFAULT_LOCALE, type Locale } from '../i18n';
+
+/**
+ * A human-readable value that must exist in every supported locale.
+ * Same convention as `site.author.nameByLocale` — the `Record<Locale, T>`
+ * type makes a missing translation a compile error.
+ */
+export type Localized<T> = Record<Locale, T>;
+
 export interface Experience {
-  role: string;
+  /** Brand name — rendered as-is in every locale, do NOT translate. */
   company: string;
   companyUrl?: string;
   location: string;
+  /** 'YYYY-MM'. */
   start: string;
-  end: string;
+  /** 'YYYY-MM'. Omit for the current job (set `current` instead). */
+  end?: string;
   current?: boolean;
+  role: Localized<string>;
+  summary: Localized<string>;
+  bullets: Localized<string[]>;
+  badges?: Localized<string[]>;
+}
+
+/** Experience with localized fields flattened for one locale. */
+export interface ResolvedExperience
+  extends Omit<Experience, 'role' | 'summary' | 'bullets' | 'badges'> {
+  role: string;
   summary: string;
   bullets: string[];
   badges?: string[];
@@ -16,59 +37,137 @@ export interface SkillGroup {
   skills: string[];
 }
 
-export interface Education {
-  degree: string;
-  field: string;
-  school: string;
-  start: string;
-  end: string;
+/** Pick the value for `locale`, falling back to the default locale. */
+function resolve<T>(value: Localized<T>, locale: Locale): T {
+  return value[locale] ?? value[DEFAULT_LOCALE];
 }
 
-/** Work history — newest first. Shown on /work */
+/** Work history — newest first. Keep zh-CN and en in sync. Shown on /work */
 export const experience: Experience[] = [
   {
-    role: 'Senior Software Engineer',
-    company: 'TODO Company',
-    companyUrl: 'https://example.com',
+    company: 'Seaforest Tools',
+    companyUrl: 'https://seaforesttools.com',
     location: 'Remote',
-    start: '2024-03',
-    end: 'Present',
+    start: '2024-06',
     current: true,
-    summary: 'TODO: 一句话总结你负责的方向或系统。',
-    bullets: [
-      'TODO: 写一个你主导的项目，结果导向而非职责罗列。',
-      'TODO: 另一个量化结果（如：延迟降低一半、采用率提升 3 倍）。',
-      'TODO: 团队贡献（Mentoring、设计评审、On-call 等）。',
-    ],
-    badges: ['TODO', 'TODO'],
+    role: {
+      'zh-CN': '软件架构师，Seaforest 创始人',
+      en: 'Software Architect & Founder',
+    },
+    summary: {
+      'zh-CN': '验证 AI 应用能力，实现营销自动化落地。',
+      en: 'Validation of AI application capabilities and marketing automation delivery.',
+    },
+    bullets: {
+      'zh-CN': [
+        '负责 Seahorizon 体系系统的设计、开发与上线落地。',
+        '将财务票据处理耗时降低 70%',
+        '搭建并落地 AI 营销自动化方案，实现营销转化效率提升。',
+      ],
+      en: [
+        'Owned the design, development and launch of the Seahorizon system.',
+        'Reduced financial invoice processing time by 70%.',
+        'Built and deployed AI marketing automation solutions to improve marketing conversion rates.',
+      ],
+    },
+    badges: {
+      'zh-CN': ['TODO', 'TODO'],
+      en: ['TODO', 'TODO'],
+    },
   },
   {
-    role: 'Software Engineer',
-    company: 'TODO Previous Company',
-    companyUrl: 'https://example.com',
+    company: 'TCL 实业',
+    companyUrl: 'https://tcl.com',
     location: 'China',
-    start: '2021-07',
+    start: '2020-07',
     end: '2024-02',
-    summary: 'TODO: 一句话描述产品和你负责的部分。',
-    bullets: [
-      'TODO: 端到端负责 X —— 设计、实现、上线。',
-      'TODO: 构建 Y 服务 Z 客户。',
-    ],
+    role: {
+      'zh-CN': '高经经理/架构师',
+      en: 'Senior Manager / Software Architect',
+    },
+    summary: {
+      'zh-CN': '主导信发平台与 B 端 IoT 平台的软件架构，同时负责研发团队管理。',
+      en: 'Led software architecture for messaging platform and B2B IoT platform, and managed the R&D team.',
+    },
+    bullets: {
+      'zh-CN': [
+        'TODO: 端到端负责 X —— 设计、实现、上线。',
+        'TODO: 构建 Y 服务 Z 客户。',
+      ],
+      en: [
+        'TODO: Owned X end to end — design, implementation, launch.',
+        'TODO: Built service Y, serving Z customers.',
+      ],
+    },
+  },
+  {
+    company: '旦倍科技',
+    companyUrl: 'https://danbay.com',
+    location: 'China',
+    start: '2018-07',
+    end: '2020-07',
+    role: {
+      'zh-CN': '高经经理/架构师',
+      en: 'Senior Manager / Software Architect',
+    },
+    summary: {
+      'zh-CN': '主导信发平台与 B 端 IoT 平台的软件架构，同时负责研发团队管理。',
+      en: 'Led software architecture for messaging platform and B2B IoT platform, and managed the R&D team.',
+    },
+    bullets: {
+      'zh-CN': [
+        'TODO: 端到端负责 X —— 设计、实现、上线。',
+        'TODO: 构建 Y 服务 Z 客户。',
+      ],
+      en: [
+        'TODO: Owned X end to end — design, implementation, launch.',
+        'TODO: Built service Y, serving Z customers.',
+      ],
+    },
+  },
+  {
+    company: '魅族科技',
+    companyUrl: 'https://meizu.com',
+    location: 'China',
+    start: '2015-10',
+    end: '2018-07',
+    role: {
+      'zh-CN': '高级工程师',
+      en: 'Senior Engineer',
+    },
+    summary: {
+      'zh-CN': '主导信发平台与 B 端 IoT 平台的软件架构，同时负责研发团队管理。',
+      en: 'Led software architecture for messaging platform and B2B IoT platform, and managed the R&D team.',
+    },
+    bullets: {
+      'zh-CN': [
+        'TODO: 端到端负责 X —— 设计、实现、上线。',
+        'TODO: 构建 Y 服务 Z 客户。',
+      ],
+      en: [
+        'TODO: Owned X end to end — design, implementation, launch.',
+        'TODO: Built service Y, serving Z customers.',
+      ],
+    },
   },
 ];
 
 export const skillGroups: SkillGroup[] = [
   {
     title: 'Languages',
-    skills: ['Go', 'Java', 'Python', 'Rust', 'TypeScript'],
+    skills: ['Java', 'Go', 'Python',  'TypeScript'],
   },
   {
     title: 'Infrastructure',
-    skills: ['Kubernetes', 'Docker', 'Linux', 'Nginx', 'Terraform'],
+    skills: [ 'Docker', 'Linux', 'Nginx'],
   },
   {
     title: 'Data & Messaging',
-    skills: ['Kafka', 'Redis', 'PostgreSQL', 'gRPC'],
+    skills: ['Kafka', 'Redis', 'MySQL', 'Elasticsearch'],
+  },
+  {
+    title: 'IoT',
+    skills: ['MQTT', 'CoAP', 'Cloud IoT'],
   },
   {
     title: 'AI / LLM',
@@ -83,14 +182,13 @@ export const typingRoles = [
   'Lifelong Learner',
 ];
 
-/** Education — newest first. Shown on /work */
-export const education: Education[] = [
-  // TODO: add your education here, e.g.:
-  // {
-  //   degree: "Master's",
-  //   field: 'Computer Science',
-  //   school: 'TODO University',
-  //   start: '2018',
-  //   end: '2020',
-  // },
-];
+/** Work history for one locale — newest first. */
+export function getExperience(locale: Locale): ResolvedExperience[] {
+  return experience.map((e) => ({
+    ...e,
+    role: resolve(e.role, locale),
+    summary: resolve(e.summary, locale),
+    bullets: resolve(e.bullets, locale),
+    badges: e.badges ? resolve(e.badges, locale) : undefined,
+  }));
+}

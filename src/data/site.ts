@@ -11,6 +11,7 @@ export interface SocialLink {
     | 'github'
     | 'linkedin'
     | 'instagram'
+    | 'juejin'
     | 'email'
     | 'rss'
     | 'download'
@@ -61,7 +62,7 @@ export const site = {
      */
     nameByLocale: {
       'zh-CN': { family: '欧', given: '雪映' },
-      en: { family: '', given: 'Sylvan' },
+      en: { family: 'Sylvan', given: 'O' },
     } satisfies Record<Locale, LocalizedName>,
     email: 'ou_xue_ying@sina.com',         // TODO: replace with real email
     location: 'China',
@@ -73,6 +74,7 @@ export const site = {
     github:    { url: 'https://github.com/sylvan-io', label: 'GitHub', icon: 'github' },     // TODO: replace handle
     //linkedin:  { url: 'https://www.linkedin.com/in/sylvan-io', label: 'LinkedIn', icon: 'linkedin' }, // TODO: replace or set to null
     //instagram: { url: 'https://www.instagram.com/sylvan-io', label: 'Instagram', icon: 'instagram' }, // TODO: replace or set to null
+    juejin:    { url: 'https://juejin.cn/user/3506807055332697', label: '掘金', icon: 'juejin' },
     email:     { url: 'mailto:ou_xue_ying@sina.com', label: 'Email', icon: 'email' },            // TODO: replace
     rss:       { url: '/rss.xml', label: 'RSS', icon: 'rss' },
   } satisfies Record<string, SocialLink | null>,

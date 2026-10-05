@@ -27,10 +27,9 @@
     "eyebrow": "Work",
     "sectionExperienceEyebrow": "Experience",
     "sectionExperienceHeading": "工作经历",
-    "sectionEducationEyebrow": "Education",
-    "sectionEducationHeading": "教育背景",
     "sectionSkillsEyebrow": "Skills",
-    "sectionSkillsHeading": "技术栈"
+    "sectionSkillsHeading": "技术栈",
+    "datePresent": "至今"
   },
   "projects": {
     "eyebrow": "Projects",

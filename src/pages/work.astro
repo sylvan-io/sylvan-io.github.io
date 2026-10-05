@@ -1,17 +1,16 @@
 ---
-import Layout from '../components/Layout.astro';
 import Experience from '../components/Experience.astro';
-import Education from '../components/Education.astro';
+import Layout from '../components/Layout.astro';
 import Skills from '../components/Skills.astro';
+import { getExperience } from '../data/resume';
 import { site, withBase } from '../data/site';
-import { experience } from '../data/resume';
-import { useT } from '../utils/t';
 import { DEFAULT_LOCALE } from '../i18n';
+import { useT } from '../utils/t';
 
 const locale = (Astro.currentLocale as 'zh-CN' | 'en' | undefined) ?? DEFAULT_LOCALE;
 const t = useT(locale);
 
-const current = experience[0];
+const current = getExperience(locale)[0];
 const links = Object.values(site.socials).filter((s): s is NonNullable<typeof s> => s !== null && (s.url.startsWith('http') || s.url.startsWith('mailto')));
 
 const description = current
@@ -27,7 +26,7 @@ const description = current
   <section class="section">
     <div class="container">
       <p class="eyebrow">{t('work.eyebrow')}</p>
-      <h1>{site.author.name}</h1>
+      <h1>{site.author.nameByLocale[locale].family} {site.author.nameByLocale[locale].given}</h1>
       {current && (
         <p class="muted" style="margin: 0 0 0.25rem;">
           {current.role} · {current.company}
@@ -46,6 +45,5 @@ const description = current
   </section>
 
   <Experience />
-  <Education />
   <Skills />
 </Layout>

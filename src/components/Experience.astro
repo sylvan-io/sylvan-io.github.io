@@ -1,7 +1,7 @@
 ---
-import { experience } from '../data/resume';
-import { useT } from '../utils/t';
+import { getExperience, type ResolvedExperience } from '../data/resume';
 import { DEFAULT_LOCALE, type Locale } from '../i18n';
+import { useT } from '../utils/t';
 
 interface Props {
   locale?: Locale;
@@ -11,8 +11,10 @@ const { locale: localeProp } = Astro.props;
 const locale: Locale = (localeProp ?? (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE) as Locale;
 const t = useT(locale);
 
-const formatDate = (e: { start: string; end: string }) =>
-  e.end === 'Present' ? `${e.start} – Present` : `${e.start} – ${e.end}`;
+const items = getExperience(locale);
+
+const formatDate = (e: ResolvedExperience) =>
+  e.current ? `${e.start} – ${t('work.datePresent')}` : `${e.start} – ${e.end}`;
 ---
 
 <section class="section section-alt" id="experience">
@@ -22,31 +24,15 @@ const formatDate = (e: { start: string; end: string }) =>
 
     <ul class="timeline">
       {
-        experience.map((e) => (
+        items.map((e) => (
           <li class:list={['timeline-item', { current: e.current }]}>
-            <details class="timeline-details">
-              <summary class="timeline-head">
-                <span class="timeline-title-wrap">
-                  <span class="timeline-role">
-                    {e.role}
-                    <span class="timeline-company"> · {e.company}</span>
-                  </span>
-                  <span class="timeline-date">{formatDate(e)}</span>
-                </span>
-                <span class="timeline-chevron" aria-hidden="true">▸</span>
-              </summary>
-              <div class="timeline-body">
-                <p class="timeline-summary">{e.summary}</p>
-                <ul class="timeline-bullets">
-                  {e.bullets.map((b) => <li>{b}</li>)}
-                </ul>
-                {e.badges && (
-                  <div class="badge-row">
-                    {e.badges.map((b) => <span class="badge">{b}</span>)}
-                  </div>
-                )}
-              </div>
-            </details>
+            <div class="timeline-head">
+              <span class="timeline-role">
+                {e.role}
+                <span class="timeline-company"> · {e.company}</span>
+              </span>
+              <span class="timeline-date">{formatDate(e)}</span>
+            </div>
           </li>
         ))
       }

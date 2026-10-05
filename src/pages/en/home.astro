@@ -1,8 +1,12 @@
 ---
-import Layout from '../../components/Layout.astro';
 import Hero from '../../components/Hero.astro';
+import Layout from '../../components/Layout.astro';
+import { getExperience, skillGroups } from '../../data/resume';
 import { site, withBase } from '../../data/site';
-import { experience, skillGroups } from '../../data/resume';
+import { DEFAULT_LOCALE, type Locale } from '../../i18n';
+
+const locale: Locale = (Astro.currentLocale as Locale | undefined) ?? DEFAULT_LOCALE;
+const currentJob = getExperience(locale)[0];
 
 const personJsonLd = {
   '@context': 'https://schema.org',
@@ -10,8 +14,8 @@ const personJsonLd = {
   name: site.author.name,
   url: site.url,
   image: `${site.url}${withBase('/images/og.jpg')}`,
-  jobTitle: experience[0]?.role,
-  worksFor: { '@type': 'Organization', name: experience[0]?.company },
+  jobTitle: currentJob?.role,
+  worksFor: { '@type': 'Organization', name: currentJob?.company },
   email: `mailto:${site.author.email}`,
   address: {
     '@type': 'PostalAddress',
@@ -19,8 +23,7 @@ const personJsonLd = {
   },
   sameAs: [
     site.socials.github?.url,
-    site.socials.linkedin?.url,
-    ...(site.socials.instagram ? [site.socials.instagram.url] : []),
+    site.socials.juejin?.url,
   ].filter((url): url is string => Boolean(url)),
   knowsAbout: skillGroups.flatMap((g) => g.skills).slice(0, 8),
 };
