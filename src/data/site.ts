@@ -71,8 +71,8 @@ export const site = {
   /** Shown in the hero and footer. Set a slot to null to skip rendering it. */
   socials: {
     github:    { url: 'https://github.com/sylvan-io', label: 'GitHub', icon: 'github' },     // TODO: replace handle
-    linkedin:  { url: 'https://www.linkedin.com/in/sylvan-io', label: 'LinkedIn', icon: 'linkedin' }, // TODO: replace or set to null
-    instagram: { url: 'https://www.instagram.com/sylvan-io', label: 'Instagram', icon: 'instagram' }, // TODO: replace or set to null
+    //linkedin:  { url: 'https://www.linkedin.com/in/sylvan-io', label: 'LinkedIn', icon: 'linkedin' }, // TODO: replace or set to null
+    //instagram: { url: 'https://www.instagram.com/sylvan-io', label: 'Instagram', icon: 'instagram' }, // TODO: replace or set to null
     email:     { url: 'mailto:ou_xue_ying@sina.com', label: 'Email', icon: 'email' },            // TODO: replace
     rss:       { url: '/rss.xml', label: 'RSS', icon: 'rss' },
   } satisfies Record<string, SocialLink | null>,
